@@ -3,7 +3,7 @@ use chrono::Utc;
 use dirs::home_dir;
 use serde_json::Value;
 use std::fs::{self, File};
-use std::io::{BufRead, BufReader};
+use std::io::BufReader;
 use std::path::{Path, PathBuf};
 
 use crate::session::{clean_prompt_text, ProviderType, SessionInfo};

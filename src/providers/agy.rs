@@ -1,5 +1,5 @@
 use anyhow::Result;
-use chrono::{TimeZone, Utc};
+use chrono::Utc;
 use dirs::home_dir;
 use serde_json::Value;
 use std::fs::{self, File};

@@ -42,16 +42,6 @@ pub fn select_session(sessions: &[SessionInfo]) -> Result<SessionInfo> {
 
     let ans = Select::new("Select a conversation session to resume (type keyword to filter):", items)
         .with_page_size(10)
-        .with_filter(&|input, option, _string_value, _index| {
-            let input_lower = input.to_lowercase();
-            let display_str = option.to_string().to_lowercase();
-            let full_title = option.0.title.to_lowercase();
-            let full_id = option.0.id.to_lowercase();
-
-            display_str.contains(&input_lower)
-                || full_title.contains(&input_lower)
-                || full_id.contains(&input_lower)
-        })
         .prompt()?;
 
     Ok(ans.0.clone())
