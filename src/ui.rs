@@ -14,7 +14,7 @@ impl<'a> fmt::Display for DisplaySession<'a> {
             &self.0.id
         };
 
-        let max_len = 45;
+        let max_len = 55;
         let char_count = self.0.title.chars().count();
         let short_title: String = self.0.title.chars().take(max_len).collect();
         let display_title = if char_count > max_len {
@@ -25,8 +25,7 @@ impl<'a> fmt::Display for DisplaySession<'a> {
 
         write!(
             f,
-            "[{}] [{}] ({}) {}",
-            self.0.provider,
+            "[{}] ({}) {}",
             self.0.formatted_time(),
             short_id,
             display_title
