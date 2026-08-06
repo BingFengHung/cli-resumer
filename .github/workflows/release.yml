@@ -21,18 +21,22 @@ jobs:
             target: x86_64-pc-windows-msvc
             binary_name: cli-resumer.exe
             asset_name: cli-resumer-windows-amd64.exe
+            target_asset: cli-resumer-x86_64-pc-windows-msvc.exe
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             binary_name: cli-resumer
             asset_name: cli-resumer-linux-amd64
+            target_asset: cli-resumer-x86_64-unknown-linux-gnu
           - os: macos-latest
             target: x86_64-apple-darwin
             binary_name: cli-resumer
             asset_name: cli-resumer-macos-x86_64
+            target_asset: cli-resumer-x86_64-apple-darwin
           - os: macos-latest
             target: aarch64-apple-darwin
             binary_name: cli-resumer
             asset_name: cli-resumer-macos-arm64
+            target_asset: cli-resumer-aarch64-apple-darwin
 
     steps:
       - uses: actions/checkout@v4
@@ -49,12 +53,19 @@ jobs:
         shell: bash
         run: |
           cp target/${{ matrix.target }}/release/${{ matrix.binary_name }} ./${{ matrix.asset_name }}
+          cp target/${{ matrix.target }}/release/${{ matrix.binary_name }} ./${{ matrix.target_asset }}
 
-      - name: Upload Artifact
+      - name: Upload Artifact (Human-readable)
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset_name }}
           path: ${{ matrix.asset_name }}
+
+      - name: Upload Artifact (Target Triple for self_update)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target_asset }}
+          path: ${{ matrix.target_asset }}
 
   release:
     name: Create GitHub Release
