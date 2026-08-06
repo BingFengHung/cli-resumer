@@ -1,6 +1,6 @@
 # cli-resumer 🚀
 
-[![CI Workflow](https://github.com/user/cli-resumer/actions/workflows/ci.yml/badge.svg)](https://github.com/user/cli-resumer/actions)
+[![CI Workflow](https://github.com/BingFengHung/cli-resumer/actions/workflows/ci.yml/badge.svg)](https://github.com/BingFengHung/cli-resumer/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **Language**: [English](README.md) | [繁體中文](README.zh-TW.md)
@@ -14,17 +14,18 @@
 - **⚡ Automatic Workspace Session Resume**: Automatically scans your current workspace directory (`CWD`), finds the most recent AI conversation session, and resumes it seamlessly.
 - **🔍 Interactive Memory Selector (`--select`)**: Offers an interactive fuzzy-search TUI menu listing session timestamps, providers, and prompt topics—allowing you to pick exactly which session memory to restore.
 - **🤖 Multi-Provider Support**: Seamlessly supports both Google AGY CLI (`agy`) and GitHub Copilot CLI (`copilot` / `gh copilot`).
-- **☁️ Zero-Local-Compilation CI/CD**: Fully automated cross-platform builds via GitHub Actions. Pre-compiled binaries for Windows, Linux, and macOS are automatically generated on releases.
+- **🔄 Built-in Self Auto-Updater (`update`)**: Automatically checks GitHub Releases for new binary releases and updates the binary in-place when running `cli-resumer update` or `cli-resumer --update`.
+- **☁️ Zero-Local-Compilation CI/CD**: Fully automated cross-platform builds via GitHub Actions. Pre-compiled binaries for Windows, Linux, and macOS are automatically generated and published directly on GitHub Releases.
 
 ---
 
 ## 🚀 Installation & Downloads
 
-Download the pre-compiled binary for your operating system from [GitHub Releases](https://github.com/user/cli-resumer/releases):
+Download the pre-compiled binary for your operating system directly from [GitHub Releases](https://github.com/BingFengHung/cli-resumer/releases):
 
 - **Windows**: `cli-resumer-windows-amd64.exe`
 - **Linux**: `cli-resumer-linux-amd64`
-- **macOS (Apple Silicon)**: `cli-resumer-macos-arm64`
+- **macOS (Apple Silicon M1/M2/M3)**: `cli-resumer-macos-arm64`
 - **macOS (Intel)**: `cli-resumer-macos-x86_64`
 
 ---
@@ -33,7 +34,7 @@ Download the pre-compiled binary for your operating system from [GitHub Releases
 
 ### 1. Default Mode (Auto-Resume Latest Workspace Session)
 ```bash
-# Auto-resumes the latest AGY CLI session in the current project directory
+# Auto-resumes the latest AGY CLI session in current workspace
 cli-resumer
 
 # Auto-resumes the latest GitHub Copilot CLI session
@@ -49,12 +50,21 @@ cli-resumer --select
 cli-resumer --select --all-workspaces
 ```
 
+### 3. Self-Updating
+```bash
+# Automatically checks GitHub Releases and updates cli-resumer to the latest release
+cli-resumer update
+# OR
+cli-resumer -u
+```
+
 ---
 
 ## 📋 Command Line Interface Options
 
-| Flag | Short | Description |
+| Flag / Subcommand | Short | Description |
 | :--- | :--- | :--- |
+| `update` / `--update` | `-u` | Check GitHub Releases and auto-update `cli-resumer` to the latest version |
 | `--target <TARGET>` | `-t` | Target AI CLI tool: `agy` (default), `copilot`, `auto` |
 | `--select` | `-s` | Display interactive selection menu to choose a session |
 | `--all-workspaces` | `-a` | Search session history across all directories (ignore CWD filter) |
@@ -71,12 +81,7 @@ cli-resumer --select --all-workspaces
    - Copilot CLI: `~/.copilot-cli/` / `~/.config/github-copilot/`
 2. **Workspace Filtering**: Parses JSON/JSONL transcripts to match session working directories against your current directory.
 3. **Execution**: Launches the target CLI with the corresponding `--resume <id>` or `resume <id>` command.
-
----
-
-## ⚙️ GitHub Actions Matrix Build
-
-All releases are compiled automatically via GitHub Actions workflows ([`.github/workflows/release.yml`](.github/workflows/release.yml)). No local Rust compilation required!
+4. **Self-Updating**: Fetches version tags from `https://api.github.com/repos/BingFengHung/cli-resumer/releases/latest` and replaces the binary in-place upon update.
 
 ---
 

@@ -1,10 +1,11 @@
 use anyhow::{anyhow, Result};
-use clap::{Parser, ValueEnum};
+use clap::{Parser, Subcommand, ValueEnum};
 use std::env;
 
 mod providers;
 mod session;
 mod ui;
+mod updater;
 
 use providers::{AgyProvider, CopilotProvider};
 use session::{ProviderType, SessionInfo};
@@ -19,11 +20,14 @@ enum TargetCli {
 #[derive(Parser, Debug)]
 #[command(
     name = "cli-resumer",
-    author = "Developer",
-    version = "0.1.0",
+    author = "BingFengHung",
+    version = env!("CARGO_PKG_VERSION"),
     about = "Automatically resume your last AI CLI conversation or pick from session history."
 )]
 struct Args {
+    #[command(subcommand)]
+    command: Option<Commands>,
+
     /// Target CLI tool to resume (agy, copilot, auto)
     #[arg(short, long, value_enum, default_value = "agy")]
     target: TargetCli,
@@ -36,13 +40,28 @@ struct Args {
     #[arg(short = 'a', long)]
     all_workspaces: bool,
 
+    /// Check and self-update cli-resumer from GitHub Releases
+    #[arg(short = 'u', long)]
+    update: bool,
+
     /// Directly resume a specific Session ID
     #[arg(long)]
     id: Option<String>,
 }
 
+#[derive(Subcommand, Debug)]
+enum Commands {
+    /// Check GitHub Releases and update cli-resumer to the latest version
+    Update,
+}
+
 fn main() -> Result<()> {
     let args = Args::parse();
+
+    if args.update || matches!(args.command, Some(Commands::Update)) {
+        return updater::check_and_update();
+    }
+
     let current_dir = if args.all_workspaces {
         None
     } else {
