@@ -1,9 +1,9 @@
 [package]
 name = "cli-resumer"
-version = "0.2.4"
+version = "0.3.0"
 edition = "2021"
 authors = ["BingFengHung"]
-description = "Auto-resume and manage recent AI CLI sessions (AGY & Copilot CLI) per workspace with self-update support."
+description = "Auto-resume and manage recent AI CLI sessions (AGY & Copilot CLI) per workspace with query search and self-update support."
 
 [dependencies]
 clap = { version = "4.4", features = ["derive"] }

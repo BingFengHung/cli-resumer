@@ -12,9 +12,11 @@
 ## 🌟 Key Features
 
 - **⚡ Automatic Workspace Session Resume**: Automatically scans your current workspace directory (`CWD`), finds the most recent AI conversation session, and resumes it seamlessly.
-- **🔍 Interactive Memory Selector (`--select`)**: Offers an interactive fuzzy-search TUI menu listing session timestamps, providers, and prompt topics—allowing you to pick exactly which session memory to restore.
+- **🔍 Keyword Query & Real-time Fuzzy Search (`-q` & `--select`)**:
+  - **CLI Query Flag (`-q <KEYWORD>`)**: Search session history directly by prompt content or session ID via command line.
+  - **In-Menu Real-Time Filter**: Start typing anytime inside the interactive menu to instantly filter conversation items.
 - **🤖 Multi-Provider Support**: Seamlessly supports both Google AGY CLI (`agy`) and GitHub Copilot CLI (`copilot` / `gh copilot`).
-- **🔄 Built-in Self Auto-Updater (`update`)**: Automatically checks GitHub Releases for new binary releases and updates the binary in-place when running `cli-resumer update` or `cli-resumer --update`.
+- **🔄 Built-in Self Auto-Updater (`update`)**: Automatically checks GitHub Releases for new binary releases and updates the binary in-place when running `cli-resumer update` or `cli-resumer -u`.
 - **☁️ Zero-Local-Compilation CI/CD**: Fully automated cross-platform builds via GitHub Actions. Pre-compiled binaries for Windows, Linux, and macOS are automatically generated and published directly on GitHub Releases.
 
 ---
@@ -41,16 +43,25 @@ cli-resumer
 cli-resumer -t copilot
 ```
 
-### 2. Interactive Selection Mode
+### 2. Search Session History (Query Flag)
 ```bash
-# Opens an interactive menu to choose a session for the current workspace
+# Search sessions matching "rust"
+cli-resumer -q rust
+
+# Search sessions across all workspaces matching "ios"
+cli-resumer -q ios -a
+```
+
+### 3. Interactive Selection Mode
+```bash
+# Opens an interactive menu (you can type keywords directly to filter)
 cli-resumer --select
 
 # Searches and lists sessions across all workspaces
 cli-resumer --select --all-workspaces
 ```
 
-### 3. Self-Updating
+### 4. Self-Updating
 ```bash
 # Automatically checks GitHub Releases and updates cli-resumer to the latest release
 cli-resumer update
@@ -64,24 +75,14 @@ cli-resumer -u
 
 | Flag / Subcommand | Short | Description |
 | :--- | :--- | :--- |
-| `update` / `--update` | `-u` | Check GitHub Releases and auto-update `cli-resumer` to the latest version |
+| `--query <KEYWORD>` | `-q` | Search session history by keyword in prompt text or session ID |
+| `--select` | `-s` | Display interactive selection menu (supports real-time typing filter) |
 | `--target <TARGET>` | `-t` | Target AI CLI tool: `agy` (default), `copilot`, `auto` |
-| `--select` | `-s` | Display interactive selection menu to choose a session |
 | `--all-workspaces` | `-a` | Search session history across all directories (ignore CWD filter) |
+| `update` / `--update` | `-u` | Check GitHub Releases and auto-update `cli-resumer` to the latest version |
 | `--id <SESSION_ID>` | | Resume a specific session directly by ID |
 | `--help` | `-h` | Show help information |
 | `--version` | `-V` | Show version information |
-
----
-
-## 🏗️ Architecture & How It Works
-
-1. **Session Detection**: Scans provider storage paths:
-   - AGY CLI: `~/.gemini/antigravity-cli/brain/<session-id>/`
-   - Copilot CLI: `~/.copilot-cli/` / `~/.config/github-copilot/`
-2. **Workspace Filtering**: Parses JSON/JSONL transcripts to match session working directories against your current directory.
-3. **Execution**: Launches the target CLI with the corresponding `--resume <id>` or `resume <id>` command.
-4. **Self-Updating**: Fetches version tags from `https://api.github.com/repos/BingFengHung/cli-resumer/releases/latest` and replaces the binary in-place upon update.
 
 ---
 

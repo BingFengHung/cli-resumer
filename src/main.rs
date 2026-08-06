@@ -36,6 +36,10 @@ struct Args {
     #[arg(short, long)]
     select: bool,
 
+    /// Filter session history by a search keyword (matches prompt text, title, or ID)
+    #[arg(short = 'q', long)]
+    query: Option<String>,
+
     /// Include sessions from all workspaces (ignore current working directory filtering)
     #[arg(short = 'a', long)]
     all_workspaces: bool,
@@ -91,6 +95,20 @@ fn main() -> Result<()> {
         }
     }
 
+    if let Some(ref q) = args.query {
+        let q_lower = q.to_lowercase();
+        sessions.retain(|s| {
+            s.title.to_lowercase().contains(&q_lower)
+                || s.id.to_lowercase().contains(&q_lower)
+                || s.formatted_time().contains(&q_lower)
+        });
+
+        if sessions.is_empty() {
+            println!("No session history found matching query: '{}'", q);
+            return Ok(());
+        }
+    }
+
     if sessions.is_empty() {
         println!("No previous session history found for current directory.");
         println!("Launching standard CLI session...");
@@ -100,7 +118,7 @@ fn main() -> Result<()> {
         }
     }
 
-    let selected_session = if args.select {
+    let selected_session = if args.select || (args.query.is_some() && sessions.len() > 1) {
         ui::select_session(&sessions)?
     } else {
         sessions
