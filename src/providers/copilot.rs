@@ -6,7 +6,7 @@ use std::fs::{self, File};
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 
-use crate::session::{ProviderType, SessionInfo};
+use crate::session::{clean_prompt_text, ProviderType, SessionInfo};
 
 pub struct CopilotProvider;
 
@@ -61,7 +61,10 @@ impl CopilotProvider {
                                 workspace_path = Some(PathBuf::from(cwd));
                             }
                             if let Some(prompt) = v.get("prompt").or(v.get("title")).and_then(|t| t.as_str()) {
-                                title = prompt.trim().chars().take(60).collect();
+                                let cleaned = clean_prompt_text(prompt);
+                                if !cleaned.is_empty() && cleaned != "Untitled Session" {
+                                    title = cleaned;
+                                }
                             }
                         }
                     }

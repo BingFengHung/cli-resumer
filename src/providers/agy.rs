@@ -6,7 +6,7 @@ use std::fs::{self, File};
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 
-use crate::session::{ProviderType, SessionInfo};
+use crate::session::{clean_prompt_text, ProviderType, SessionInfo};
 
 pub struct AgyProvider;
 
@@ -68,9 +68,9 @@ impl AgyProvider {
                                 if let Some(type_str) = v.get("type").and_then(|t| t.as_str()) {
                                     if type_str == "USER_INPUT" {
                                         if let Some(content) = v.get("content").and_then(|c| c.as_str()) {
-                                            let cleaned = content.trim();
-                                            if !cleaned.is_empty() {
-                                                title = cleaned.chars().take(60).collect();
+                                            let cleaned = clean_prompt_text(content);
+                                            if !cleaned.is_empty() && cleaned != "Untitled Session" {
+                                                title = cleaned;
                                             }
                                         }
                                     }

@@ -8,13 +8,28 @@ struct DisplaySession<'a>(&'a SessionInfo);
 
 impl<'a> fmt::Display for DisplaySession<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let short_id = if self.0.id.len() >= 8 {
+            &self.0.id[..8]
+        } else {
+            &self.0.id
+        };
+
+        let max_len = 45;
+        let char_count = self.0.title.chars().count();
+        let short_title: String = self.0.title.chars().take(max_len).collect();
+        let display_title = if char_count > max_len {
+            format!("{}...", short_title)
+        } else {
+            short_title
+        };
+
         write!(
             f,
-            "[{}] [{}] {} - {}",
+            "[{}] [{}] ({}) {}",
             self.0.provider,
             self.0.formatted_time(),
-            self.0.id,
-            self.0.title
+            short_id,
+            display_title
         )
     }
 }
