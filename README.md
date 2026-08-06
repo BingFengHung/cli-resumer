@@ -1,57 +1,85 @@
 # cli-resumer 🚀
 
-`cli-resumer` 是一個使用 **Rust** 開發的 CLI 工具，專門為解決在專案資料夾啟動 AI CLI 工具（如 **AGY CLI** 與 **GitHub Copilot CLI**）時，每次都需要手動輸入 `/resume` 的痛點。
+[![CI Workflow](https://github.com/user/cli-resumer/actions/workflows/ci.yml/badge.svg)](https://github.com/user/cli-resumer/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> **Language**: [English](README.md) | [繁體中文](README.zh-TW.md)
+
+`cli-resumer` is a lightweight, cross-platform CLI tool written in **Rust**. It eliminates the hassle of manually entering `/resume` every time you launch AI CLI coding assistants (such as **Google AGY CLI** or **GitHub Copilot CLI**) in your project workspace.
 
 ---
 
-## ✨ 主要功能 (Features)
+## 🌟 Key Features
 
-1. **自動恢復最新對話 (Auto Resume)**：
-   - 預設自動讀取當前專案資料夾（Workspace）中最近一次的 AI 對話 Session，免去手動輸入 `/resume`。
-2. **對話記憶選擇選單 (Interactive Session Selector)**：
-   - 使用 `-s` 或 `--select` 參數時，呈現互動式選單，列出過往歷史對話時間與主題簡述，隨心選擇要載入哪一段記憶。
-3. **跨工具支援 (Multi-Provider Support)**：
-   - 同時支援 Google AGY CLI (`agy`) 與 GitHub Copilot CLI (`copilot` / `gh copilot`)。
-4. **雲端 GitHub Actions 自動編譯 (Zero Local Compilation)**：
-   - 地端不需要安裝或執行 `cargo build`，所有二進制檔 (Windows `.exe`, Linux, macOS) 皆由 GitHub Actions 自動矩陣編譯發布！
+- **⚡ Automatic Workspace Session Resume**: Automatically scans your current workspace directory (`CWD`), finds the most recent AI conversation session, and resumes it seamlessly.
+- **🔍 Interactive Memory Selector (`--select`)**: Offers an interactive fuzzy-search TUI menu listing session timestamps, providers, and prompt topics—allowing you to pick exactly which session memory to restore.
+- **🤖 Multi-Provider Support**: Seamlessly supports both Google AGY CLI (`agy`) and GitHub Copilot CLI (`copilot` / `gh copilot`).
+- **☁️ Zero-Local-Compilation CI/CD**: Fully automated cross-platform builds via GitHub Actions. Pre-compiled binaries for Windows, Linux, and macOS are automatically generated on releases.
 
 ---
 
-## 🛠️ 使用方式 (Usage)
+## 🚀 Installation & Downloads
 
-### 1. 預設模式（自動恢復當前專案最新對話）
+Download the pre-compiled binary for your operating system from [GitHub Releases](https://github.com/user/cli-resumer/releases):
+
+- **Windows**: `cli-resumer-windows-amd64.exe`
+- **Linux**: `cli-resumer-linux-amd64`
+- **macOS (Apple Silicon)**: `cli-resumer-macos-arm64`
+- **macOS (Intel)**: `cli-resumer-macos-x86_64`
+
+---
+
+## 💡 Usage
+
+### 1. Default Mode (Auto-Resume Latest Workspace Session)
 ```bash
-# 自動恢復當前專案目錄下的最新 AGY CLI 對話
+# Auto-resumes the latest AGY CLI session in the current project directory
 cli-resumer
 
-# 指定 GitHub Copilot CLI
+# Auto-resumes the latest GitHub Copilot CLI session
 cli-resumer -t copilot
 ```
 
-### 2. 互動式選擇歷史對話
+### 2. Interactive Selection Mode
 ```bash
-# 彈出互動選單選擇要恢復的 Session
+# Opens an interactive menu to choose a session for the current workspace
 cli-resumer --select
 
-# 選擇全域（所有專案）的歷史對話
+# Searches and lists sessions across all workspaces
 cli-resumer --select --all-workspaces
 ```
 
-### 3. CLI 參數說明 (Command Line Options)
-| 參數 | 簡寫 | 說明 |
+---
+
+## 📋 Command Line Interface Options
+
+| Flag | Short | Description |
 | :--- | :--- | :--- |
-| `--target <TARGET>` | `-t` | 指定目標 CLI 工具：`agy`（預設）、`copilot`、`auto` |
-| `--select` | `-s` | 顯示互動選單手動挑選 Session |
-| `--all-workspaces` | `-a` | 搜尋所有專案的對話紀錄（預設僅比對當前工作目錄） |
-| `--id <SESSION_ID>` | | 直接指定 Session ID 進行恢復 |
+| `--target <TARGET>` | `-t` | Target AI CLI tool: `agy` (default), `copilot`, `auto` |
+| `--select` | `-s` | Display interactive selection menu to choose a session |
+| `--all-workspaces` | `-a` | Search session history across all directories (ignore CWD filter) |
+| `--id <SESSION_ID>` | | Resume a specific session directly by ID |
+| `--help` | `-h` | Show help information |
+| `--version` | `-V` | Show version information |
 
 ---
 
-## ⚙️ GitHub Actions 自動編譯工作流 (CI/CD Workflows)
+## 🏗️ Architecture & How It Works
 
-所有的 Rust 程式碼編譯全部交由 `.github/workflows/release.yml` 執行：
-- **Windows (x86_64-pc-windows-msvc)** -> `cli-resumer-windows-amd64.exe`
-- **Linux (x86_64-unknown-linux-gnu)** -> `cli-resumer-linux-amd64`
-- **macOS (x86_64 & aarch64)** -> `cli-resumer-macos`
+1. **Session Detection**: Scans provider storage paths:
+   - AGY CLI: `~/.gemini/antigravity-cli/brain/<session-id>/`
+   - Copilot CLI: `~/.copilot-cli/` / `~/.config/github-copilot/`
+2. **Workspace Filtering**: Parses JSON/JSONL transcripts to match session working directories against your current directory.
+3. **Execution**: Launches the target CLI with the corresponding `--resume <id>` or `resume <id>` command.
 
-當推送到 `main` 分支或建立 Tag 時，GitHub Actions 將會自動產出對應平台的 Executable 供下載使用。
+---
+
+## ⚙️ GitHub Actions Matrix Build
+
+All releases are compiled automatically via GitHub Actions workflows ([`.github/workflows/release.yml`](.github/workflows/release.yml)). No local Rust compilation required!
+
+---
+
+## 📄 License
+
+Distributed under the MIT License.
