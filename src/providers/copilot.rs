@@ -90,25 +90,46 @@ impl CopilotProvider {
     }
 
     pub fn launch_resume(session_id: &str) -> Result<()> {
-        println!("Launching GitHub Copilot CLI with session [{}]...", session_id);
-        
+        let is_latest = session_id.is_empty();
+        println!(
+            "Launching GitHub Copilot CLI with session [{}]...",
+            if is_latest { "latest" } else { session_id }
+        );
+
+        let mut command_args = Vec::new();
+        if is_latest {
+            command_args.push("resume".to_string());
+        } else {
+            command_args.push("resume".to_string());
+            command_args.push(session_id.to_string());
+        }
+
         #[cfg(target_os = "windows")]
         let mut cmd = std::process::Command::new("cmd");
         #[cfg(target_os = "windows")]
-        cmd.args(["/C", "copilot", "resume", session_id]);
+        {
+            let mut full_args = vec!["/C".to_string(), "copilot".to_string()];
+            full_args.extend(command_args);
+            cmd.args(&full_args);
+        }
 
         #[cfg(not(target_os = "windows"))]
         let mut cmd = std::process::Command::new("copilot");
         #[cfg(not(target_os = "windows"))]
-        cmd.args(["resume", session_id]);
+        cmd.args(&command_args);
 
-        let status = cmd.status()?;
-        if !status.success() {
-            println!("Fallback: Attempting to launch gh copilot...");
+        let status = cmd.status();
+        if status.is_err() || !status.as_ref().map(|s| s.success()).unwrap_or(false) {
+            println!("Fallback: Attempting to launch via 'gh copilot'...");
             #[cfg(target_os = "windows")]
-            let _ = std::process::Command::new("cmd").args(["/C", "gh", "copilot", "suggest"]).status();
+            let _ = std::process::Command::new("cmd")
+                .args(["/C", "gh", "copilot", "suggest"])
+                .status();
+
             #[cfg(not(target_os = "windows"))]
-            let _ = std::process::Command::new("gh").args(["copilot", "suggest"]).status();
+            let _ = std::process::Command::new("gh")
+                .args(["copilot", "suggest"])
+                .status();
         }
 
         Ok(())

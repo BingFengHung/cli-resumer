@@ -103,21 +103,37 @@ impl AgyProvider {
     }
 
     pub fn launch_resume(session_id: &str) -> Result<()> {
-        println!("Launching AGY CLI with resumed session [{}]...", session_id);
-        
+        let is_latest = session_id.is_empty();
+        println!(
+            "Launching AGY CLI with session [{}]...",
+            if is_latest { "latest" } else { session_id }
+        );
+
+        let mut command_args = Vec::new();
+        if is_latest {
+            command_args.push("--continue".to_string());
+        } else {
+            command_args.push("--conversation".to_string());
+            command_args.push(session_id.to_string());
+        }
+
         #[cfg(target_os = "windows")]
         let mut cmd = std::process::Command::new("cmd");
         #[cfg(target_os = "windows")]
-        cmd.args(["/C", "agy", "--resume", session_id]);
+        {
+            let mut full_args = vec!["/C".to_string(), "agy".to_string()];
+            full_args.extend(command_args);
+            cmd.args(&full_args);
+        }
 
         #[cfg(not(target_os = "windows"))]
         let mut cmd = std::process::Command::new("agy");
         #[cfg(not(target_os = "windows"))]
-        cmd.args(["--resume", session_id]);
+        cmd.args(&command_args);
 
         let status = cmd.status()?;
         if !status.success() {
-            println!("Note: If 'agy --resume' command failed, falling back to launching standard 'agy'...");
+            println!("Note: Failed to launch agy with conversation arguments. Falling back to launching standard 'agy'...");
             #[cfg(target_os = "windows")]
             let _ = std::process::Command::new("cmd").args(["/C", "agy"]).status();
             #[cfg(not(target_os = "windows"))]
