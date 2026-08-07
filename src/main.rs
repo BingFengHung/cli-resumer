@@ -76,13 +76,25 @@ enum Commands {
         #[arg(short = 'y', long)]
         yes: bool,
     },
-    /// Manage user configuration file (config.json)
-    Config,
+    /// Manage and edit configuration file (~/.cli-resumer/config.json)
+    Config {
+        /// Set default target CLI (agy, copilot, auto)
+        #[arg(short, long)]
+        target: Option<String>,
+
+        /// Set default select mode (true / false)
+        #[arg(short, long)]
+        select: Option<bool>,
+
+        /// Open config.json in system text editor
+        #[arg(short, long)]
+        edit: bool,
+    },
 }
 
 fn main() -> Result<()> {
     let args = Args::parse();
-    let cfg = Config::load();
+    let mut cfg = Config::load();
 
     if args.update || matches!(args.command, Some(Commands::Update)) {
         return updater::check_and_update();
@@ -96,14 +108,23 @@ fn main() -> Result<()> {
         return clean::clean_empty_sessions(yes);
     }
 
-    if matches!(args.command, Some(Commands::Config)) {
-        let path = Config::path().unwrap_or_default();
-        println!("Configuration file path: {}", path.display());
-        if !path.exists() {
-            cfg.save()?;
-        } else {
-            println!("{}", serde_json::to_string_pretty(&cfg)?);
+    if let Some(Commands::Config { target, select, edit }) = args.command {
+        if edit {
+            return Config::open_in_editor();
         }
+
+        if target.is_none() && select.is_none() {
+            return cfg.interactive_edit();
+        }
+
+        if let Some(t) = target {
+            cfg.default_target = t;
+        }
+        if let Some(s) = select {
+            cfg.default_select = s;
+        }
+        cfg.save()?;
+        println!("✅ Configuration updated!");
         return Ok(());
     }
 
