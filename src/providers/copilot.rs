@@ -102,14 +102,12 @@ impl CopilotProvider {
         let is_latest = session_id.is_empty();
         println!(
             "Launching GitHub Copilot CLI with session [{}]...",
-            if is_latest { "latest" } else { session_id }
+            if is_latest { "standard" } else { session_id }
         );
 
         let mut command_args = Vec::new();
-        if is_latest {
-            command_args.push("resume".to_string());
-        } else {
-            command_args.push("resume".to_string());
+        if !is_latest {
+            command_args.push("--resume".to_string());
             command_args.push(session_id.to_string());
         }
 
@@ -129,16 +127,14 @@ impl CopilotProvider {
 
         let status = cmd.status();
         if status.is_err() || !status.as_ref().map(|s| s.success()).unwrap_or(false) {
-            println!("Fallback: Attempting to launch via 'gh copilot'...");
+            println!("Note: Launch with parameters failed, launching standard 'copilot'...");
             #[cfg(target_os = "windows")]
             let _ = std::process::Command::new("cmd")
-                .args(["/C", "gh", "copilot", "suggest"])
+                .args(["/C", "copilot"])
                 .status();
 
             #[cfg(not(target_os = "windows"))]
-            let _ = std::process::Command::new("gh")
-                .args(["copilot", "suggest"])
-                .status();
+            let _ = std::process::Command::new("copilot").status();
         }
 
         Ok(())

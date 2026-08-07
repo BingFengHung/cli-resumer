@@ -1,6 +1,6 @@
 [package]
 name = "cli-resumer"
-version = "0.5.0"
+version = "0.5.1"
 edition = "2021"
 authors = ["BingFengHung"]
 description = "Auto-resume and manage recent AI CLI sessions (AGY & Copilot CLI) with interactive config wizard, aliases, session info, and self-updater."
