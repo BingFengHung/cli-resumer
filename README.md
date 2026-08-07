@@ -15,7 +15,7 @@
 - **⏱️ Relative Time Display**: Displays human-friendly relative time alongside exact timestamps (e.g. `[2 hours ago] [2026-08-07 08:30:25]`).
 - **🔍 Keyword Query & Fuzzy Filter (`-q` & Menu Search)**: Search sessions by keyword or type directly inside the interactive menu.
 - **🔍 Session Inspection Card (`info`)**: View prompt turns, workspace path, and prompt previews before resuming.
-- **⚙️ JSON Config File (`config`)**: Set default CLI targets (`agy`/`copilot`) and selection behaviors in `~/.config/cli-resumer/config.json`.
+- **⚙️ JSON Config File (`config`)**: Set default CLI targets (`agy`/`copilot`) and selection behaviors in `~/.cli-resumer/config.json`.
 - **🔗 Shell Alias Installer (`alias`)**: Auto-install convenient alias commands (`agyr`, `agys`, `cpr`, `cps`) into PowerShell, Bash, or Zsh.
 - **🧹 Empty Session Cleanup (`clean`)**: Safely scan and delete 0-prompt empty session folders with user confirmation.
 - **🔄 Built-in Self Auto-Updater (`update`)**: Automatically checks GitHub Releases for new binary releases and updates the binary in-place when running `cli-resumer update`.
@@ -69,7 +69,7 @@ cli-resumer clean
 | `info` / `--info` | `-i` | Display detailed session inspection card |
 | `alias` | | Install shell aliases (`agyr`, `agys`, `cpr`, `cps`) |
 | `clean` | | Safely scan and remove empty session directories |
-| `config` | | View or generate `config.json` configuration file |
+| `config` | | View or generate `~/.cli-resumer/config.json` configuration file |
 | `--query <KEYWORD>` | `-q` | Search session history by keyword |
 | `--select` | `-s` | Display interactive selection menu |
 | `--target <TARGET>` | `-t` | Target AI CLI tool: `agy` (default), `copilot`, `auto` |

@@ -1,5 +1,5 @@
 use anyhow::Result;
-use dirs::config_dir;
+use dirs::home_dir;
 use serde::{Deserialize, Serialize};
 use std::fs::{self, File};
 use std::path::PathBuf;
@@ -23,7 +23,7 @@ impl Default for Config {
 
 impl Config {
     pub fn path() -> Option<PathBuf> {
-        config_dir().map(|d| d.join("cli-resumer").join("config.json"))
+        home_dir().map(|d| d.join(".cli-resumer").join("config.json"))
     }
 
     pub fn load() -> Self {

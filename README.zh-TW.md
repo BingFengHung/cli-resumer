@@ -15,7 +15,7 @@
 - **⏱️ 人性化相對時間顯示**：選單中同時顯示相對時間與精確時間（如 `[2 小時前] [2026-08-07 08:30:25]`）。
 - **🔍 關鍵字搜尋與即時過濾 (`-q` & 選單打字)**：輸入 `-q <KEYWORD>` 搜尋對話，或在選單開啟時隨時打字進行模糊搜尋。
 - **🔍 Session 詳細資訊卡片 (`info`)**：預覽對話輪數、檔案修訂與近 5 次 Prompt 摘要。
-- **⚙️ 個人化 JSON 設定檔 (`config`)**：支援設定預設目標工具 (`agy`/`copilot`) 與預設選單行為。
+- **⚙️ 個人化 JSON 設定檔 (`config`)**：存放於家目錄 `~/.cli-resumer/config.json`，支援設定預設目標工具 (`agy`/`copilot`) 與預設選單行為。
 - **🔗 Shell Alias 一鍵安裝 (`alias`)**：自動將快捷指令 (`agyr`, `agys`, `cpr`, `cps`) 寫入 PowerShell / Bash / Zsh 設定檔。
 - **🧹 空白對話清理工具 (`clean`)**：自動掃描並安全清理 0 提問的空對話資料夾。
 - **🔄 一鍵自動檢查更新 (`update`)**：輸入 `cli-resumer update` 自動檢查並替換至最新 GitHub Release 版本。
@@ -82,7 +82,7 @@ cli-resumer update
 | `info` / `--info` | `-i` | 顯示 Session 詳細資訊卡片 |
 | `alias` | | 一鍵安裝 Shell 快捷別名 (`agyr`, `agys`, `cpr`, `cps`) |
 | `clean` | | 掃描並安全清理空的對話資料夾（支援 `-y` 跳過確認） |
-| `config` | | 檢視與產生 `config.json` 個人化設定檔 |
+| `config` | | 檢視與產生 `~/.cli-resumer/config.json` 個人化設定檔 |
 | `--query <KEYWORD>` | `-q` | 搜尋過往 Prompt 對話內容或 Session ID |
 | `--select` | `-s` | 顯示互動選單手動挑選歷史 Session |
 | `--target <TARGET>` | `-t` | 指定目標 CLI 工具：`agy`（預設）、`copilot`、`auto` |
