@@ -159,7 +159,7 @@ fn main() -> Result<()> {
     if let Some(explicit_id) = args.id {
         if let Some(found) = sessions.iter().find(|s| s.id == explicit_id) {
             if args.info || matches!(args.command, Some(Commands::Info)) {
-                info::print_session_info(found);
+                info::print_session_info(found, args.query.as_deref());
                 return Ok(());
             }
             match found.provider {
@@ -194,7 +194,7 @@ fn main() -> Result<()> {
 
     let force_select = args.select || cfg.default_select;
     let selected_session = if force_select || (args.query.is_some() && sessions.len() > 1) {
-        ui::select_session(&sessions)?
+        ui::select_session(&sessions, args.query.as_deref())?
     } else {
         sessions
             .into_iter()
@@ -203,7 +203,7 @@ fn main() -> Result<()> {
     };
 
     if args.info || matches!(args.command, Some(Commands::Info)) {
-        info::print_session_info(&selected_session);
+        info::print_session_info(&selected_session, args.query.as_deref());
         return Ok(());
     }
 
