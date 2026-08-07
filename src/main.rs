@@ -5,6 +5,7 @@ use std::env;
 mod alias;
 mod clean;
 mod config;
+mod export;
 mod info;
 mod providers;
 mod session;
@@ -49,6 +50,10 @@ struct Args {
     #[arg(short = 'i', long)]
     info: bool,
 
+    /// Export session transcript notes to Markdown file
+    #[arg(short = 'e', long)]
+    export: bool,
+
     /// Include sessions from all workspaces (ignore current working directory filtering)
     #[arg(short = 'a', long)]
     all_workspaces: bool,
@@ -66,10 +71,16 @@ struct Args {
 enum Commands {
     /// Check GitHub Releases and update cli-resumer to the latest version
     Update,
-    /// Install convenient shell aliases (agyr, agys, cpr, cps)
+    /// Install convenient shell aliases (agyr, agys, cpr, cps) & AGY CLI /export skill
     Alias,
     /// Inspect detailed information card for a session
     Info,
+    /// Export conversation transcript to Markdown file (AI_SESSION_NOTES.md)
+    Export {
+        /// Custom output filename for exported Markdown
+        #[arg(short, long)]
+        output: Option<String>,
+    },
     /// Scan and safely clean empty/untitled sessions
     Clean {
         /// Automatically confirm deletion without prompting
@@ -158,6 +169,15 @@ fn main() -> Result<()> {
 
     if let Some(explicit_id) = args.id {
         if let Some(found) = sessions.iter().find(|s| s.id == explicit_id) {
+            if args.export || matches!(args.command, Some(Commands::Export { .. })) {
+                let out_file = match args.command {
+                    Some(Commands::Export { ref output }) => output.as_deref(),
+                    _ => None,
+                };
+                export::export_session(Some(found), out_file)?;
+                return Ok(());
+            }
+
             if args.info || matches!(args.command, Some(Commands::Info)) {
                 info::print_session_info(found, args.query.as_deref());
                 return Ok(());
@@ -201,6 +221,15 @@ fn main() -> Result<()> {
             .next()
             .ok_or_else(|| anyhow!("No session available."))?
     };
+
+    if args.export || matches!(args.command, Some(Commands::Export { .. })) {
+        let out_file = match args.command {
+            Some(Commands::Export { ref output }) => output.as_deref(),
+            _ => None,
+        };
+        export::export_session(Some(&selected_session), out_file)?;
+        return Ok(());
+    }
 
     if args.info || matches!(args.command, Some(Commands::Info)) {
         info::print_session_info(&selected_session, args.query.as_deref());

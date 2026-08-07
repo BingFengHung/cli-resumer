@@ -12,12 +12,15 @@
 ## 🌟 Key Features
 
 - **⚡ Automatic Workspace Session Resume**: Automatically scans your current workspace directory (`CWD`), finds the most recent AI conversation session, and resumes it seamlessly.
+- **📄 Conversation Markdown Exporter (`export`)**:
+  - Run `cli-resumer export` to export uncompressed, full-text conversation transcripts into `AI_SESSION_NOTES.md`!
+  - **In-Session Slash Command (`/export`)**: Run `cli-resumer alias` to register `/export` skill inside AGY CLI so you can type `/export` directly inside your AGY CLI session!
 - **🎨 Terminal Keyword Highlighting**: Matched search terms are highlighted in bold yellow ANSI colors across selection menus and info cards.
 - **⏱️ Relative Time Display**: Displays human-friendly relative time alongside exact timestamps (e.g. `[2 hours ago] [2026-08-07 08:30:25]`).
 - **🔍 Keyword Query & Fuzzy Filter (`-q` & Menu Search)**: Search sessions by keyword or type directly inside the interactive menu.
 - **🔍 Session Inspection Card (`info`)**: View prompt turns, workspace path, and prompt previews before resuming.
 - **⚙️ JSON Config File (`config`)**: Set default CLI targets (`agy`/`copilot`) and selection behaviors in `~/.cli-resumer/config.json`.
-- **🔗 Shell Alias Installer (`alias`)**: Auto-install convenient alias commands (`agyr`, `agys`, `cpr`, `cps`) into PowerShell, Bash, or Zsh.
+- **🔗 Shell Alias Installer (`alias`)**: Auto-install convenient alias commands (`agyr`, `agys`, `cpr`, `cps`) and AGY CLI `/export` skill into PowerShell, Bash, or Zsh.
 - **🧹 Empty Session Cleanup (`clean`)**: Safely scan and delete 0-prompt empty session folders with user confirmation.
 - **🔄 Built-in Self Auto-Updater (`update`)**: Automatically checks GitHub Releases for new binary releases and updates the binary in-place when running `cli-resumer update`.
 

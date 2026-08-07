@@ -1,9 +1,9 @@
 [package]
 name = "cli-resumer"
-version = "0.6.0"
+version = "0.7.0"
 edition = "2021"
 authors = ["BingFengHung"]
-description = "Auto-resume and manage recent AI CLI sessions (AGY & Copilot CLI) with terminal keyword highlighting, config, aliases, session info, and self-updater."
+description = "Auto-resume and manage recent AI CLI sessions (AGY & Copilot CLI) with Markdown exporter, in-session /export slash command skill, config, aliases, session info, and self-updater."
 
 [dependencies]
 clap = { version = "4.4", features = ["derive"] }

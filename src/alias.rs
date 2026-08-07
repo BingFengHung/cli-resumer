@@ -3,8 +3,12 @@ use dirs::home_dir;
 use std::fs::OpenOptions;
 use std::io::Write;
 
+use crate::export;
+
 pub fn install_aliases() -> Result<()> {
-    println!("Installing shell aliases for cli-resumer...");
+    println!("Installing shell aliases and AGY CLI skills for cli-resumer...");
+
+    let _ = export::install_export_skill();
 
     #[cfg(target_os = "windows")]
     {
