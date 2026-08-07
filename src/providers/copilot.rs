@@ -47,6 +47,8 @@ impl CopilotProvider {
                     let mut title = "Copilot Session".to_string();
                     let mut timestamp = Utc::now();
                     let mut workspace_path: Option<PathBuf> = None;
+                    let mut prompt_count = 0;
+                    let mut prompt_previews = Vec::new();
 
                     if let Ok(metadata) = entry.metadata() {
                         if let Ok(modified) = metadata.modified() {
@@ -63,7 +65,9 @@ impl CopilotProvider {
                             if let Some(prompt) = v.get("prompt").or(v.get("title")).and_then(|t| t.as_str()) {
                                 let cleaned = clean_prompt_text(prompt);
                                 if !cleaned.is_empty() && cleaned != "Untitled Session" {
-                                    title = cleaned;
+                                    prompt_count += 1;
+                                    title = cleaned.clone();
+                                    prompt_previews.push(cleaned);
                                 }
                             }
                         }
@@ -82,6 +86,8 @@ impl CopilotProvider {
                             timestamp,
                             workspace_path,
                             provider: ProviderType::Copilot,
+                            prompt_count,
+                            prompt_previews,
                         });
                     }
                 }

@@ -3,3 +3,9 @@
 *.user
 .DS_Store
 Thumbs.db
+
+# Local Skills & Scratch Files (Never push to GitHub)
+.skills/
+skills/
+scratch/
+.gemini/

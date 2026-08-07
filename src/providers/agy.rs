@@ -46,6 +46,8 @@ impl AgyProvider {
             let mut title = "Untitled Session".to_string();
             let mut timestamp = Utc::now();
             let mut workspace_path: Option<PathBuf> = None;
+            let mut prompt_count = 0;
+            let mut prompt_previews = Vec::new();
 
             if let Ok(metadata) = entry.metadata() {
                 if let Ok(modified) = metadata.modified() {
@@ -64,13 +66,17 @@ impl AgyProvider {
                                 }
                             }
 
-                            if title == "Untitled Session" {
-                                if let Some(type_str) = v.get("type").and_then(|t| t.as_str()) {
-                                    if type_str == "USER_INPUT" {
-                                        if let Some(content) = v.get("content").and_then(|c| c.as_str()) {
-                                            let cleaned = clean_prompt_text(content);
-                                            if !cleaned.is_empty() && cleaned != "Untitled Session" {
-                                                title = cleaned;
+                            if let Some(type_str) = v.get("type").and_then(|t| t.as_str()) {
+                                if type_str == "USER_INPUT" {
+                                    if let Some(content) = v.get("content").and_then(|c| c.as_str()) {
+                                        let cleaned = clean_prompt_text(content);
+                                        if !cleaned.is_empty() && cleaned != "Untitled Session" {
+                                            prompt_count += 1;
+                                            if title == "Untitled Session" {
+                                                title = cleaned.clone();
+                                            }
+                                            if prompt_previews.len() < 5 {
+                                                prompt_previews.push(cleaned);
                                             }
                                         }
                                     }
@@ -94,6 +100,8 @@ impl AgyProvider {
                     timestamp,
                     workspace_path,
                     provider: ProviderType::Agy,
+                    prompt_count,
+                    prompt_previews,
                 });
             }
         }

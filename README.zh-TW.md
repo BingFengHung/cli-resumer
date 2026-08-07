@@ -11,13 +11,15 @@
 
 ## 🌟 主要功能 (Features)
 
-- **⚡ 自動恢復當前專案對話 (Workspace Auto Resume)**：自動掃描當前專案資料夾 (`CWD`)，找到最近一次的 AI 對話 Session 並自動恢復，完全免去手動輸入 `/resume`。
-- **🔍 關鍵字搜尋與互動選單 (`-q` & `--select`)**：
-  - **命令列搜尋 (`-q <KEYWORD>`)**：直接在命令列輸入關鍵字搜尋過往對話 Prompt 或 Session ID。
-  - **即時模糊搜尋選單**：在選單開啟時，可隨時直接打字過濾對話選單。
-- **🤖 跨工具支援 (Multi-Provider Support)**：同時支援 Google AGY CLI (`agy`) 與 GitHub Copilot CLI (`copilot` / `gh copilot`)。
-- **🔄 一鍵自動檢查更新 (`update`)**：內建自動更新機制，只要執行 `cli-resumer update` 或 `cli-resumer -u`，程式將自動前往 GitHub Releases 檢查並替換為最新版本。
-- **☁️ 地端零編譯 & GitHub Actions 自動化**：本機端不需要安裝或執行 `cargo build`。跨平台二進制檔（Windows、Linux、macOS）皆由 GitHub Actions 在雲端自動建置發布至 Releases 頁面供點擊下載。
+- **⚡ 自動恢復當前專案對話 (Workspace Auto Resume)**：自動掃描當前專案資料夾 (`CWD`)，找到最近一次的 AI 對話 Session 並自動恢復。
+- **⏱️ 人性化相對時間顯示**：選單中同時顯示相對時間與精確時間（如 `[2 小時前] [2026-08-07 08:30:25]`）。
+- **🔍 關鍵字搜尋與即時過濾 (`-q` & 選單打字)**：輸入 `-q <KEYWORD>` 搜尋對話，或在選單開啟時隨時打字進行模糊搜尋。
+- **🔍 Session 詳細資訊卡片 (`info`)**：預覽對話輪數、檔案修訂與近 5 次 Prompt 摘要。
+- **⚙️ 個人化 JSON 設定檔 (`config`)**：支援設定預設目標工具 (`agy`/`copilot`) 與預設選單行為。
+- **🔗 Shell Alias 一鍵安裝 (`alias`)**：自動將快捷指令 (`agyr`, `agys`, `cpr`, `cps`) 寫入 PowerShell / Bash / Zsh 設定檔。
+- **🧹 空白對話清理工具 (`clean`)**：自動掃描並安全清理 0 提問的空對話資料夾。
+- **🔄 一鍵自動檢查更新 (`update`)**：輸入 `cli-resumer update` 自動檢查並替換至最新 GitHub Release 版本。
+- **☁️ 地端零編譯 & GitHub Actions 自動化**：本機端不需要安裝或執行 `cargo build`。二進制檔由 GitHub Actions 在雲端自動交叉編譯與發布。
 
 ---
 
@@ -36,53 +38,56 @@
 
 ### 1. 預設模式（自動恢復當前專案最新對話）
 ```bash
-# 自動恢復當前專案目錄下的最新 AGY CLI 對話
 cli-resumer
-
-# 自動恢復當前專案目錄下的最新 GitHub Copilot CLI 對話
-cli-resumer -t copilot
 ```
 
 ### 2. 關鍵字搜尋對話 (Search / Query)
 ```bash
-# 搜尋包含 "rust" 關鍵字的對話紀錄
 cli-resumer -q rust
-
-# 搜尋全域（跨專案）包含 "ios" 關鍵字的對話
-cli-resumer -q ios -a
 ```
 
-### 3. 互動選單模式 (Interactive Menu)
+### 3. 查看 Session 詳細卡片 (Info Card)
 ```bash
-# 彈出互動選單選擇當前專案要恢復的 Session（可在選單中直接打字搜尋）
-cli-resumer --select
-
-# 搜尋並列出所有專案（全域）的歷史對話紀錄
-cli-resumer --select --all-workspaces
+cli-resumer info
+# 或帶入 -i
+cli-resumer -i
 ```
 
-### 4. 自動更新機制
+### 4. 安裝 Shell 快捷別名 (Shell Aliases)
 ```bash
-# 前往 GitHub Releases 檢查並更新至最新版本
+cli-resumer alias
+```
+
+### 5. 清理空白對話 (Clean Empty Sessions)
+```bash
+cli-resumer clean
+```
+
+### 6. 管理設定檔 (Config)
+```bash
+cli-resumer config
+```
+
+### 7. 自動更新 (Self-Update)
+```bash
 cli-resumer update
-# 或使用簡寫
-cli-resumer -u
 ```
 
 ---
 
-## 📋 CLI 參數說明 (Command Line Interface Options)
+## 📋 CLI 參數與子指令說明 (CLI Commands & Options)
 
-| 參數 / 子指令 | 簡寫 | 說明 |
+| 子指令 / 參數 | 簡寫 | 說明 |
 | :--- | :--- | :--- |
+| `info` / `--info` | `-i` | 顯示 Session 詳細資訊卡片 |
+| `alias` | | 一鍵安裝 Shell 快捷別名 (`agyr`, `agys`, `cpr`, `cps`) |
+| `clean` | | 掃描並安全清理空的對話資料夾（支援 `-y` 跳過確認） |
+| `config` | | 檢視與產生 `config.json` 個人化設定檔 |
 | `--query <KEYWORD>` | `-q` | 搜尋過往 Prompt 對話內容或 Session ID |
-| `--select` | `-s` | 顯示互動選單手動挑選歷史 Session（選單內亦可即時打字搜尋） |
+| `--select` | `-s` | 顯示互動選單手動挑選歷史 Session |
 | `--target <TARGET>` | `-t` | 指定目標 CLI 工具：`agy`（預設）、`copilot`、`auto` |
 | `--all-workspaces` | `-a` | 搜尋所有專案的對話紀錄（忽略當前目錄過濾） |
 | `update` / `--update` | `-u` | 前往 GitHub Releases 檢查並自動更新至最新版本 |
-| `--id <SESSION_ID>` | | 直接使用指定 Session ID 進行恢復 |
-| `--help` | `-h` | 顯示說明訊息 |
-| `--version` | `-V` | 顯示版本資訊 |
 
 ---
 

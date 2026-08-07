@@ -12,12 +12,13 @@
 ## 🌟 Key Features
 
 - **⚡ Automatic Workspace Session Resume**: Automatically scans your current workspace directory (`CWD`), finds the most recent AI conversation session, and resumes it seamlessly.
-- **🔍 Keyword Query & Real-time Fuzzy Search (`-q` & `--select`)**:
-  - **CLI Query Flag (`-q <KEYWORD>`)**: Search session history directly by prompt content or session ID via command line.
-  - **In-Menu Real-Time Filter**: Start typing anytime inside the interactive menu to instantly filter conversation items.
-- **🤖 Multi-Provider Support**: Seamlessly supports both Google AGY CLI (`agy`) and GitHub Copilot CLI (`copilot` / `gh copilot`).
-- **🔄 Built-in Self Auto-Updater (`update`)**: Automatically checks GitHub Releases for new binary releases and updates the binary in-place when running `cli-resumer update` or `cli-resumer -u`.
-- **☁️ Zero-Local-Compilation CI/CD**: Fully automated cross-platform builds via GitHub Actions. Pre-compiled binaries for Windows, Linux, and macOS are automatically generated and published directly on GitHub Releases.
+- **⏱️ Relative Time Display**: Displays human-friendly relative time alongside exact timestamps (e.g. `[2 hours ago] [2026-08-07 08:30:25]`).
+- **🔍 Keyword Query & Fuzzy Filter (`-q` & Menu Search)**: Search sessions by keyword or type directly inside the interactive menu.
+- **🔍 Session Inspection Card (`info`)**: View prompt turns, workspace path, and prompt previews before resuming.
+- **⚙️ JSON Config File (`config`)**: Set default CLI targets (`agy`/`copilot`) and selection behaviors in `~/.config/cli-resumer/config.json`.
+- **🔗 Shell Alias Installer (`alias`)**: Auto-install convenient alias commands (`agyr`, `agys`, `cpr`, `cps`) into PowerShell, Bash, or Zsh.
+- **🧹 Empty Session Cleanup (`clean`)**: Safely scan and delete 0-prompt empty session folders with user confirmation.
+- **🔄 Built-in Self Auto-Updater (`update`)**: Automatically checks GitHub Releases for new binary releases and updates the binary in-place when running `cli-resumer update`.
 
 ---
 
@@ -34,55 +35,45 @@ Download the pre-compiled binary for your operating system directly from [GitHub
 
 ## 💡 Usage
 
-### 1. Default Mode (Auto-Resume Latest Workspace Session)
+### 1. Default Mode
 ```bash
-# Auto-resumes the latest AGY CLI session in current workspace
 cli-resumer
-
-# Auto-resumes the latest GitHub Copilot CLI session
-cli-resumer -t copilot
 ```
 
-### 2. Search Session History (Query Flag)
+### 2. Search Session History
 ```bash
-# Search sessions matching "rust"
 cli-resumer -q rust
-
-# Search sessions across all workspaces matching "ios"
-cli-resumer -q ios -a
 ```
 
-### 3. Interactive Selection Mode
+### 3. Session Inspection Card
 ```bash
-# Opens an interactive menu (you can type keywords directly to filter)
-cli-resumer --select
-
-# Searches and lists sessions across all workspaces
-cli-resumer --select --all-workspaces
+cli-resumer info
 ```
 
-### 4. Self-Updating
+### 4. Install Shell Aliases
 ```bash
-# Automatically checks GitHub Releases and updates cli-resumer to the latest release
-cli-resumer update
-# OR
-cli-resumer -u
+cli-resumer alias
+```
+
+### 5. Clean Empty Sessions
+```bash
+cli-resumer clean
 ```
 
 ---
 
 ## 📋 Command Line Interface Options
 
-| Flag / Subcommand | Short | Description |
+| Subcommand / Flag | Short | Description |
 | :--- | :--- | :--- |
-| `--query <KEYWORD>` | `-q` | Search session history by keyword in prompt text or session ID |
-| `--select` | `-s` | Display interactive selection menu (supports real-time typing filter) |
+| `info` / `--info` | `-i` | Display detailed session inspection card |
+| `alias` | | Install shell aliases (`agyr`, `agys`, `cpr`, `cps`) |
+| `clean` | | Safely scan and remove empty session directories |
+| `config` | | View or generate `config.json` configuration file |
+| `--query <KEYWORD>` | `-q` | Search session history by keyword |
+| `--select` | `-s` | Display interactive selection menu |
 | `--target <TARGET>` | `-t` | Target AI CLI tool: `agy` (default), `copilot`, `auto` |
-| `--all-workspaces` | `-a` | Search session history across all directories (ignore CWD filter) |
-| `update` / `--update` | `-u` | Check GitHub Releases and auto-update `cli-resumer` to the latest version |
-| `--id <SESSION_ID>` | | Resume a specific session directly by ID |
-| `--help` | `-h` | Show help information |
-| `--version` | `-V` | Show version information |
+| `update` / `--update` | `-u` | Auto-update `cli-resumer` from GitHub Releases |
 
 ---
 
